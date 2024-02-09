@@ -67,7 +67,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
               itemBuilder: (context, index) {
                 final group = _groups[index];
                 return _GroupItem(
-                  onTap: () => null, // _goToTask(group),
+                  onTap: () {}, // _goToTask(group),
                   group: group,
                 );
               },
@@ -85,7 +85,6 @@ class _GroupItem extends StatelessWidget {
   final Group group;
   final VoidCallback onTap;
   const _GroupItem({
-    super.key,
     required this.group,
     required this.onTap,
   });
