@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/models/group.dart';
+import 'package:todo_list/objectbox.g.dart';
 import 'package:todo_list/ui/add_group_screen.dart';
 
 class GroupsScreen extends StatefulWidget {
@@ -11,6 +12,28 @@ class GroupsScreen extends StatefulWidget {
 
 class _GroupsScreenState extends State<GroupsScreen> {
   final _groups = <Group>[];
+  late final Store _store;
+  late final Box<Group> _groupsBox;
+
+
+  @override
+  void initState() {
+    _loadStore(); 
+    super.initState();
+  }
+
+  Future<void> _loadStore() async {
+    _store = await openStore();
+    _groupsBox = _store.box<Group>();
+    _loadGroups();
+  }
+
+  void _loadGroups() {
+    _groups.clear();
+    setState(() {
+      _groups.addAll(_groupsBox.getAll());
+    });
+  }
 
   Future<void> _addGroup() async {
     final result = await showDialog(
@@ -18,8 +41,11 @@ class _GroupsScreenState extends State<GroupsScreen> {
       builder: (_) => const AddGroupScreen(),
     );
 
-    if(result != null) {
+    if(result != null && result is Group) {
       //insert into the database
+      _groupsBox.put(result);
+      _loadGroups();
+
     }
   }
 

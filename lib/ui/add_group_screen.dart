@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:todo_list/models/group.dart';
@@ -133,15 +132,15 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 20,
                         vertical: 15,
                       ),
                       child: MaterialButton(
                         color: Colors.blue,
                         elevation: 2,
-                        child: Padding(
-                          
+                        onPressed: _onSave,
+                        child: const Padding(
                           padding: EdgeInsets.all(15),
                           child: Text(
                             'Create Group',
@@ -151,7 +150,6 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
                             ),
                           ),
                         ),
-                        onPressed: _onSave,
                       ),
                     ),
                   ],
