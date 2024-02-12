@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/models/group.dart';
 import 'package:todo_list/objectbox.g.dart';
 import 'package:todo_list/ui/add_group_screen.dart';
+import 'package:todo_list/ui/task_screen.dart';
 
 class GroupsScreen extends StatefulWidget {
   const GroupsScreen({super.key});
@@ -15,17 +16,17 @@ class _GroupsScreenState extends State<GroupsScreen> {
   late final Store _store;
   late final Box<Group> _groupsBox;
 
+  Future<void> _addGroup() async {
+    final result = await showDialog(
+      context: context,
+      builder: (_) => const AddGroupScreen(),
+    );
 
-  @override
-  void initState() {
-    _loadStore(); 
-    super.initState();
-  }
-
-  Future<void> _loadStore() async {
-    _store = await openStore();
-    _groupsBox = _store.box<Group>();
-    _loadGroups();
+    if (result != null && result is Group) {
+      //insert into the database
+      _groupsBox.put(result);
+      _loadGroups();
+    }
   }
 
   void _loadGroups() {
@@ -35,18 +36,24 @@ class _GroupsScreenState extends State<GroupsScreen> {
     });
   }
 
-  Future<void> _addGroup() async {
-    final result = await showDialog(
-      context: context,
-      builder: (_) => const AddGroupScreen(),
+  Future<void> _loadStore() async {
+    _store = await openStore();
+    _groupsBox = _store.box<Group>();
+    _loadGroups();
+  }
+
+  Future<void> _goToTask(Group group) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TaskScreen(group: group, store: _store),
+      ),
     );
+  }
 
-    if(result != null && result is Group) {
-      //insert into the database
-      _groupsBox.put(result);
-      _loadGroups();
-
-    }
+  @override
+  void initState() {
+    _loadStore();
+    super.initState();
   }
 
   @override
@@ -67,7 +74,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
               itemBuilder: (context, index) {
                 final group = _groups[index];
                 return _GroupItem(
-                  onTap: () {}, // _goToTask(group),
+                  onTap: () => _goToTask(group),
                   group: group,
                 );
               },
