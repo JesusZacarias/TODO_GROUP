@@ -48,6 +48,8 @@ class _GroupsScreenState extends State<GroupsScreen> {
         builder: (_) => TaskScreen(group: group, store: _store),
       ),
     );
+
+    _loadGroups();
   }
 
   @override

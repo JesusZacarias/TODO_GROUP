@@ -19,7 +19,33 @@ class _TaskScreenState extends State<TaskScreen> {
   final _task = <Task>[];
 
   void _onSave() {
+    final description = textController.text.trim();
 
+    if (description.isNotEmpty) {
+      textController.clear();
+      final task = Task(description: description);
+      task.group.target = widget.group;
+      widget.store.box<Task>().put(task);
+      _reloadTasks();
+    }
+  }
+
+  void _reloadTasks() {
+    _task.clear();
+    QueryBuilder<Task> builder = widget.store.box<Task>().query();
+    builder.link(Task_.group, Group_.id.equals(widget.group.id));
+    Query<Task> query = builder.build();
+    List<Task> taskResult = query.find();
+    setState(() {
+      _task.addAll(taskResult);
+    });
+    query.close();
+  }
+
+  @override
+  void initState() {
+    _task.addAll(List.from(widget.group.tasks));
+    super.initState();
   }
 
   @override
@@ -43,6 +69,7 @@ class _TaskScreenState extends State<TaskScreen> {
             ),
             MaterialButton(
               color: Colors.blue,
+              onPressed: _onSave,
               child: const Padding(
                 padding: EdgeInsets.all(15),
                 child: Text(
@@ -52,7 +79,6 @@ class _TaskScreenState extends State<TaskScreen> {
                   ),
                 ),
               ),
-              onPressed: _onSave,
             ),
             const SizedBox(
               height: 10,
@@ -61,7 +87,24 @@ class _TaskScreenState extends State<TaskScreen> {
               child: ListView.builder(
                 itemCount: _task.length,
                 itemBuilder: (context, index) {
-                  
+                  final task = _task[index];
+                  return ListTile(
+                    title: Text(
+                      task.description,
+                      style: TextStyle(
+                        decoration:
+                            task.completed ? TextDecoration.lineThrough : null,
+                      ),
+                    ),
+                    leading: Checkbox(
+                      value: task.completed,
+                      onChanged: (val) => null,
+                    ),
+                    trailing: IconButton(
+                      onPressed: () => null,
+                      icon: const Icon(Icons.close),
+                    ),
+                  );
                 },
               ),
             ),
