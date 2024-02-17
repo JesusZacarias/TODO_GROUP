@@ -107,7 +107,7 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
                         scrollDirection: Axis.horizontal,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
+                          crossAxisCount: 1,
                         ),
                         itemCount: Colors.primaries.length,
                         itemBuilder: (context, index) {
