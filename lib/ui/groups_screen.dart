@@ -58,6 +58,13 @@ class _GroupsScreenState extends State<GroupsScreen> {
     super.initState();
   }
 
+    @override
+  void dispose() {
+    _store.close();
+    super.dispose();
+  }
+
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,7 +107,7 @@ class _GroupItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final description = group.taskDescription;
+    final description = group.taskDescription();
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: InkWell(
@@ -120,12 +127,12 @@ class _GroupItem extends StatelessWidget {
                   fontSize: 22,
                 ),
               ),
-              if (description.toString().isNotEmpty) ...[
+              if (description.isNotEmpty) ...[
                 const SizedBox(
                   height: 10,
                 ),
                 Text(
-                  description.toString(),
+                  description,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 17,

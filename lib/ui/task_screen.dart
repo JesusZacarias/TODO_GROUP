@@ -42,11 +42,24 @@ class _TaskScreenState extends State<TaskScreen> {
     query.close();
   }
 
+  void _onUpdate(int index, bool completed) {
+    final task = _task[index];
+    task.completed = completed;
+    widget.store.box<Task>().put(task);
+    _reloadTasks();
+  }
+
+  void _onDelete(Task task) {
+    widget.store.box<Task>().remove(task.id);
+    _reloadTasks();
+  }
+
   @override
   void initState() {
     _task.addAll(List.from(widget.group.tasks));
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -98,10 +111,10 @@ class _TaskScreenState extends State<TaskScreen> {
                     ),
                     leading: Checkbox(
                       value: task.completed,
-                      onChanged: (val) => null,
+                      onChanged: (val) => _onUpdate(index, val!),
                     ),
                     trailing: IconButton(
-                      onPressed: () => null,
+                      onPressed: () => _onDelete(task),
                       icon: const Icon(Icons.close),
                     ),
                   );
